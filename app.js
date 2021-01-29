@@ -1,10 +1,29 @@
 const express = require('express');
-const app = express();
+const mongoose = require('mongoose');
+const userRoutes = require("./routes/user");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser")
 require('dotenv').config();
 
-app.get('/',(req,res)=>{
-    res.send("hellow from node");
-});
+
+//app
+const app = express();
+
+//db
+mongoose.connect(process.env.DATABASE,{
+    useNewUrlParser:true,
+    useCreateIndex:true   
+})
+.then(()=>console.log("DB Connected"));
+
+//middlewares
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+//routes middleware
+app.use("/api",userRoutes);
 
 const port = process.env.PORT || 8000
 
